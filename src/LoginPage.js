@@ -1,54 +1,79 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion'; // Pastikan untuk menginstal framer-motion
+import { FaUser, FaLock } from 'react-icons/fa'; // Menggunakan ikon untuk input
 
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const [showLogin, setShowLogin] = useState(true); // Untuk mengatur tampilan login
+  const [showLogin, setShowLogin] = useState(true);
+  const [loading, setLoading] = useState(false); // State untuk loading
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === 'imran sayang zaraaa' && password === '250523') {
-      setShowLogin(false); // Sembunyikan form login
-      setIsUnlocked(true); // Tampilkan gembok hati
-      setTimeout(() => {
-        onLogin(); // Panggil fungsi untuk login jika kredensial valid
-      }, 1500); // Tunggu 1.5 detik sebelum login
-    } else {
-      setError('Username atau Password salah!');
-    }
+    setLoading(true); // Mulai loading
+    setError('');
+
+    // Simulasi delay untuk loading
+    setTimeout(() => {
+      if (username === 'imran sayang zaraaa' && password === '250523') {
+        setShowLogin(false);
+        setIsUnlocked(true);
+        setTimeout(() => {
+          onLogin();
+        }, 1500);
+      } else {
+        setError('Username atau Password salah!');
+      }
+      setLoading(false); // Selesai loading
+    }, 1000);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-pink-400 via-red-300 to-yellow-200">
       <h1 className="text-5xl font-bold text-white mb-5">Login</h1>
-      {error && <p className="text-red-500 mb-4">{error}</p>}
-      
+      {error && (
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-red-500 mb-4"
+        >
+          {error}
+        </motion.p>
+      )}
+
       {showLogin ? (
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg">
-          <input
-            type="text"
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border border-gray-300 rounded p-2 mb-4 w-full"
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border border-gray-300 rounded p-2 mb-4 w-full"
-            required
-          />
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-80">
+          <div className="relative mb-4">
+            <FaUser className="absolute left-3 top-2.5 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className="border border-gray-300 rounded p-2 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-600"
+              required
+            />
+          </div>
+          <div className="relative mb-4">
+            <FaLock className="absolute left-3 top-2.5 text-gray-400" />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="border border-gray-300 rounded p-2 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-pink-600"
+              required
+            />
+          </div>
           <button
             type="submit"
-            className="bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700"
+            className={`bg-pink-600 text-white py-2 px-4 rounded hover:bg-pink-700 transition duration-200 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={loading}
           >
-            Login
+            {loading ? 'Loading...' : 'Login'}
           </button>
         </form>
       ) : null}
@@ -61,7 +86,6 @@ const LoginPage = ({ onLogin }) => {
           transition={{ duration: 0.5 }}
           className="mt-6 text-center"
         >
-    
           <h2 className="text-2xl mt-2 text-white">Selamat Datang, Cintaku! ❤️</h2>
         </motion.div>
       )}
